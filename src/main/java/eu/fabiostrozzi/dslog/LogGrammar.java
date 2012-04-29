@@ -32,7 +32,6 @@ import eu.fabiostrozzi.dslog.model.User;
 public class LogGrammar extends BaseGrammar implements ClosureStatement, ConstraintStatement,
         ContextStatement, EventStatement, ExpectedStatement, FoundStatement, MessageStatement,
         SubjectStatement, TellerStatement, UserStatement, EntityStatement {
-    protected DSLogLevel level;
 
     /**
      * Constructor requires a log level.
@@ -42,7 +41,6 @@ public class LogGrammar extends BaseGrammar implements ClosureStatement, Constra
      */
     public LogGrammar(DSLogLevel level) {
         super(level);
-        this.level = level;
     }
 
     /*

@@ -10,8 +10,9 @@ import eu.fabiostrozzi.dslog.model.Term;
  */
 public interface TermFormatter<T extends Term> {
     /**
+     * @param sb
      * @param t
      * @return
      */
-    public Object format(T t);
+    public void format(Term term, StringBuilder sb);
 }

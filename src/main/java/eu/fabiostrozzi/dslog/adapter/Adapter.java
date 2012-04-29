@@ -1,6 +1,8 @@
 // Adapter.java, created on Apr 24, 2012
 package eu.fabiostrozzi.dslog.adapter;
 
+import java.util.Date;
+
 import eu.fabiostrozzi.dslog.ThreadContext;
 import eu.fabiostrozzi.dslog.DSLogLevel;
 import eu.fabiostrozzi.dslog.model.Term;
@@ -31,10 +33,11 @@ public interface Adapter {
      * Tells the underlying log device to compose a message made of the given terms.
      * 
      * @param level
+     * @param timestamp 
      * @param context
      * @param terms
      */
-    void log(DSLogLevel level, ThreadContext context, Term... terms);
+    void log(DSLogLevel level, Date timestamp, ThreadContext context, Term... terms);
 
     /**
      * Returns true if the log level of the underlying log device is at least higher as input value.

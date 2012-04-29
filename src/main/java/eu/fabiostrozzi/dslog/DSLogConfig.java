@@ -65,6 +65,7 @@ public class DSLogConfig {
      * @param props
      * @return
      */
+    @SuppressWarnings("unchecked")
     private static Configuration configure(Properties props) {
         ConfigurationImpl conf = new ConfigurationImpl();
 

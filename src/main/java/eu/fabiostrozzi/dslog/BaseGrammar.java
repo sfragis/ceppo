@@ -2,6 +2,7 @@
 package eu.fabiostrozzi.dslog;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import eu.fabiostrozzi.dslog.adapter.Adapter;
 import eu.fabiostrozzi.dslog.model.Term;
@@ -13,6 +14,7 @@ import eu.fabiostrozzi.dslog.model.Term;
 public abstract class BaseGrammar {
     protected DSLogLevel level;
     protected ArrayList<Term> terms;
+    protected Date timestamp;
 
     /**
      * Instances a new basic grammar with the specified log level.
@@ -22,6 +24,7 @@ public abstract class BaseGrammar {
     public BaseGrammar(DSLogLevel level) {
         this.level = level;
         this.terms = new ArrayList<Term>(5);
+        this.timestamp = new Date();
     }
 
     /*
@@ -35,7 +38,7 @@ public abstract class BaseGrammar {
             if (a.isGreatEqual(level)) {
                 if (array == null)
                     array = terms.toArray(new Term[0]);
-                a.log(level, log.getContext(), array);
+                a.log(level, timestamp, log.getContext(), array);
             }
         }
     }
