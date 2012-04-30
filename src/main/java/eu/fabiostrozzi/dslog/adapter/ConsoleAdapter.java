@@ -34,7 +34,10 @@ public class ConsoleAdapter implements Adapter {
             @Override
             public void format(Term t, StringBuilder sb) {
                 Constraint c = (Constraint) t;
-                // TODO
+                sb.append("constraint '").append(c.getName()).append("' ")
+                        .append(c.isPassed() ? "passed" : "violated");
+                if (c.getPassedHow() != null)
+                    sb.append(" due to ").append(c.getPassedHow());
             }
         });
 
@@ -42,7 +45,13 @@ public class ConsoleAdapter implements Adapter {
             @Override
             public void format(Term t, StringBuilder sb) {
                 Context c = (Context) t;
-                // TODO
+                if (c.getAttributes().length > 0) {
+                    sb.append("context is made up of: ");
+                    for (int i = 0; i < c.getAttributes().length; i++) {
+                        Object o = c.getAttributes()[i];
+                        sb.append(String.valueOf(o)).append(i % 2 == 0 ? "=" : ", ");
+                    }
+                }
             }
         });
 
@@ -50,7 +59,7 @@ public class ConsoleAdapter implements Adapter {
             @Override
             public void format(Term t, StringBuilder sb) {
                 Entity e = (Entity) t;
-                // TODO
+                sb.append(e.getName()).append(" ").append(e.getAction());
             }
         });
 
