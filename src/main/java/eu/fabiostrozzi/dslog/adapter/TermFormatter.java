@@ -1,7 +1,7 @@
 // TermFormatter.java, created on Apr 30, 2012
 package eu.fabiostrozzi.dslog.adapter;
 
-import eu.fabiostrozzi.dslog.model.Term;
+import eu.fabiostrozzi.dslog.terms.Term;
 
 /**
  * Formats a term according to the current adapter.

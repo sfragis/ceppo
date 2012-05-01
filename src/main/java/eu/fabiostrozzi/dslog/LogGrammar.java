@@ -14,15 +14,14 @@ import eu.fabiostrozzi.dslog.lang.MessageStatement;
 import eu.fabiostrozzi.dslog.lang.SubjectStatement;
 import eu.fabiostrozzi.dslog.lang.TellerStatement;
 import eu.fabiostrozzi.dslog.lang.UserStatement;
-import eu.fabiostrozzi.dslog.model.Constraint;
-import eu.fabiostrozzi.dslog.model.Context;
-import eu.fabiostrozzi.dslog.model.Entity;
-import eu.fabiostrozzi.dslog.model.Event;
-import eu.fabiostrozzi.dslog.model.ExpectedAndFound;
-import eu.fabiostrozzi.dslog.model.Happening;
-import eu.fabiostrozzi.dslog.model.Message;
-import eu.fabiostrozzi.dslog.model.Teller;
-import eu.fabiostrozzi.dslog.model.User;
+import eu.fabiostrozzi.dslog.terms.Constraint;
+import eu.fabiostrozzi.dslog.terms.Context;
+import eu.fabiostrozzi.dslog.terms.Entity;
+import eu.fabiostrozzi.dslog.terms.ExpectedAndFound;
+import eu.fabiostrozzi.dslog.terms.Happening;
+import eu.fabiostrozzi.dslog.terms.Message;
+import eu.fabiostrozzi.dslog.terms.Teller;
+import eu.fabiostrozzi.dslog.terms.User;
 
 /**
  * The log language grammar.
@@ -192,9 +191,8 @@ public class LogGrammar extends BaseGrammar implements ClosureStatement, Constra
      * @see eu.fabiostrozzi.dslog.lang.EventStatement#failed()
      */
     public ContextStatement failed() {
-        Event e = new Event();
-        e.setSucceeded(false);
-        terms.add(e);
+        Message m = lastOrAppendNew(terms, Message.class);
+        m.setSucceeded(false);
         return this;
     }
 
@@ -202,11 +200,10 @@ public class LogGrammar extends BaseGrammar implements ClosureStatement, Constra
      * (non-Javadoc)
      * @see eu.fabiostrozzi.dslog.lang.EventStatement#failed(java.lang.String)
      */
-    public ContextStatement failed(String how) {
-        Event e = new Event();
-        e.setSucceeded(false);
-        e.setOutcome(how);
-        terms.add(e);
+    public ContextStatement failed(String why) {
+        Message m = lastOrAppendNew(terms, Message.class);
+        m.setSucceeded(false);
+        m.setWhy(why);
         return this;
     }
 
@@ -215,9 +212,8 @@ public class LogGrammar extends BaseGrammar implements ClosureStatement, Constra
      * @see eu.fabiostrozzi.dslog.lang.EventStatement#succeeded()
      */
     public ContextStatement succeeded() {
-        Event e = new Event();
-        e.setSucceeded(true);
-        terms.add(e);
+        Message m = lastOrAppendNew(terms, Message.class);
+        m.setSucceeded(true);
         return this;
     }
 
@@ -225,11 +221,10 @@ public class LogGrammar extends BaseGrammar implements ClosureStatement, Constra
      * (non-Javadoc)
      * @see eu.fabiostrozzi.dslog.lang.EventStatement#succeeded(java.lang.String)
      */
-    public ContextStatement succeeded(String how) {
-        Event e = new Event();
-        e.setSucceeded(true);
-        e.setOutcome(how);
-        terms.add(e);
+    public ContextStatement succeeded(String why) {
+        Message m = lastOrAppendNew(terms, Message.class);
+        m.setSucceeded(true);
+        m.setWhy(why);
         return this;
     }
 
@@ -238,9 +233,8 @@ public class LogGrammar extends BaseGrammar implements ClosureStatement, Constra
      * @see eu.fabiostrozzi.dslog.lang.EventStatement#prepared()
      */
     public ContextStatement prepared() {
-        Event e = new Event();
-        e.setPrepared(true);
-        terms.add(e);
+        Message m = lastOrAppendNew(terms, Message.class);
+        m.setPrepared(true);
         return this;
     }
 

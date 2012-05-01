@@ -1,5 +1,5 @@
 // Entity.java, created on Apr 29, 2012
-package eu.fabiostrozzi.dslog.model;
+package eu.fabiostrozzi.dslog.terms;
 
 /**
  * @author fabio

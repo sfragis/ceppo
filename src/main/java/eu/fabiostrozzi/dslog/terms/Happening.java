@@ -1,5 +1,5 @@
 // Happening.java, created on Apr 19, 2012
-package eu.fabiostrozzi.dslog.model;
+package eu.fabiostrozzi.dslog.terms;
 
 /**
  * @author fabio

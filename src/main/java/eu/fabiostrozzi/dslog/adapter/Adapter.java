@@ -5,7 +5,7 @@ import java.util.Date;
 
 import eu.fabiostrozzi.dslog.ThreadContext;
 import eu.fabiostrozzi.dslog.DSLogLevel;
-import eu.fabiostrozzi.dslog.model.Term;
+import eu.fabiostrozzi.dslog.terms.Term;
 
 /**
  * Defines an adapter for a generic log device.

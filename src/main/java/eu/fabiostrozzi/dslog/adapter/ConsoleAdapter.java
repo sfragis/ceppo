@@ -1,22 +1,23 @@
 // ConsoleAdapter.java, created on Apr 29, 2012
 package eu.fabiostrozzi.dslog.adapter;
 
+import static eu.fabiostrozzi.dslog.Utils.joinLines;
+
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
 import eu.fabiostrozzi.dslog.DSLogLevel;
 import eu.fabiostrozzi.dslog.ThreadContext;
-import eu.fabiostrozzi.dslog.model.Constraint;
-import eu.fabiostrozzi.dslog.model.Context;
-import eu.fabiostrozzi.dslog.model.Entity;
-import eu.fabiostrozzi.dslog.model.Event;
-import eu.fabiostrozzi.dslog.model.ExpectedAndFound;
-import eu.fabiostrozzi.dslog.model.Happening;
-import eu.fabiostrozzi.dslog.model.Message;
-import eu.fabiostrozzi.dslog.model.Teller;
-import eu.fabiostrozzi.dslog.model.Term;
-import eu.fabiostrozzi.dslog.model.User;
+import eu.fabiostrozzi.dslog.terms.Constraint;
+import eu.fabiostrozzi.dslog.terms.Context;
+import eu.fabiostrozzi.dslog.terms.Entity;
+import eu.fabiostrozzi.dslog.terms.ExpectedAndFound;
+import eu.fabiostrozzi.dslog.terms.Happening;
+import eu.fabiostrozzi.dslog.terms.Message;
+import eu.fabiostrozzi.dslog.terms.Teller;
+import eu.fabiostrozzi.dslog.terms.Term;
+import eu.fabiostrozzi.dslog.terms.User;
 
 /**
  * Console adapter uses {@code System.out.println}.
@@ -46,7 +47,7 @@ public class ConsoleAdapter implements Adapter {
             public void format(Term t, StringBuilder sb) {
                 Context c = (Context) t;
                 if (c.getAttributes().length > 0) {
-                    sb.append("context is made up of: ");
+                    sb.append("context is: ");
                     for (int i = 0; i < c.getAttributes().length; i++) {
                         Object o = c.getAttributes()[i];
                         sb.append(String.valueOf(o)).append(i % 2 == 0 ? "=" : ", ");
@@ -60,14 +61,6 @@ public class ConsoleAdapter implements Adapter {
             public void format(Term t, StringBuilder sb) {
                 Entity e = (Entity) t;
                 sb.append(e.getName()).append(" ").append(e.getAction());
-            }
-        });
-
-        formatters.put(Event.class, new TermFormatter<Event>() {
-            @Override
-            public void format(Term t, StringBuilder sb) {
-                Event e = (Event) t;
-                // TODO
             }
         });
 
@@ -89,7 +82,23 @@ public class ConsoleAdapter implements Adapter {
         formatters.put(Message.class, new TermFormatter<Message>() {
             @Override
             public void format(Term t, StringBuilder sb) {
-                // TODO Auto-generated method stub
+                Message m = (Message) t;
+                sb.append("message '").append(m.getType()).append("'");
+                if (m.getTo() != null)
+                    sb.append(" to '").append(m.getTo()).append("'");
+                else
+                    sb.append(" from '").append(m.getFrom()).append("'");
+                if (m.getContent() != null)
+                    sb.append(" with content '").append(joinLines(m.getContent(), "§")).append("'");
+                switch (m.getSucceededOrPrepared()) {
+                case 1: // succeeded
+                    sb.append(m.isSucceeded() ? " successfully " : " cannot be ").append(
+                            m.getTo() != null ? " sent" : " received");
+                    break;
+                case 2: // prepared
+                    sb.append(m.isPrepared() ? " successfully " : " cannot be ").append("prepared");
+                    break;
+                }
             }
         });
 
@@ -138,7 +147,7 @@ public class ConsoleAdapter implements Adapter {
     /*
      * (non-Javadoc)
      * @see eu.fabiostrozzi.dslog.adapter.Adapter#log(eu.fabiostrozzi.dslog.DSLogLevel,
-     * java.util.Date, eu.fabiostrozzi.dslog.ThreadContext, eu.fabiostrozzi.dslog.model.Term[])
+     * java.util.Date, eu.fabiostrozzi.dslog.ThreadContext, eu.fabiostrozzi.dslog.terms.Term[])
      */
     @Override
     public void log(DSLogLevel level, Date timestamp, ThreadContext context, Term... terms) {

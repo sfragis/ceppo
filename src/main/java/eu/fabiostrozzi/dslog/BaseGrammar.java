@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import eu.fabiostrozzi.dslog.adapter.Adapter;
-import eu.fabiostrozzi.dslog.model.Term;
+import eu.fabiostrozzi.dslog.terms.Term;
 
 /**
  * @author fabio

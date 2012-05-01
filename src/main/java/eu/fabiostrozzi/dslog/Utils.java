@@ -93,4 +93,16 @@ public class Utils {
         }
         return l.toArray(new String[0]);
     }
+
+    /**
+     * @param content
+     * @param separator
+     * @return
+     */
+    public static Object joinLines(String content, String separator) {
+        if (content == null)
+            return null;
+        content = content.replaceAll("\n\r", separator);
+        return content;
+    }
 }
