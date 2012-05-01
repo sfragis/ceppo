@@ -17,7 +17,7 @@ public class Message implements Term {
     // 0 = none set
     // 1 = succeeded
     // 2 = prepared
-    private int succeededOrPrepared = 0;
+    private int status = 0;
 
     /**
      * @return the type
@@ -92,7 +92,7 @@ public class Message implements Term {
      */
     public void setSucceeded(boolean succeeded) {
         this.succeeded = succeeded;
-        this.succeededOrPrepared = 1;
+        this.status = 1;
     }
 
     /**
@@ -123,14 +123,14 @@ public class Message implements Term {
      */
     public void setPrepared(boolean prepared) {
         this.prepared = prepared;
-        this.succeededOrPrepared = 2;
+        this.status = 2;
     }
 
     /**
-     * @return the succeededOrPrepared
+     * @return the status
      */
-    public int getSucceededOrPrepared() {
-        return succeededOrPrepared;
+    public int getStatus() {
+        return status;
     }
 
 }

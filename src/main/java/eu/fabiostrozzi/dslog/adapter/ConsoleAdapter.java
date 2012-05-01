@@ -90,7 +90,7 @@ public class ConsoleAdapter implements Adapter {
                     sb.append(" from '").append(m.getFrom()).append("'");
                 if (m.getContent() != null)
                     sb.append(" with content '").append(joinLines(m.getContent(), "§")).append("'");
-                switch (m.getSucceededOrPrepared()) {
+                switch (m.getStatus()) {
                 case 1: // succeeded
                     sb.append(m.isSucceeded() ? " successfully " : " cannot be ").append(
                             m.getTo() != null ? " sent" : " received");
