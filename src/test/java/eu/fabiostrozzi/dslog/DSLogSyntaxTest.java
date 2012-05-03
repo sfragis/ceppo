@@ -46,7 +46,7 @@ public class DSLogSyntaxTest {
         info().entity("subscription").did("created").with("id", id, "username", username).log(log);
 
         try {
-            // ...
+            throw new RuntimeException("pippo pluto paperino");
         } catch (Throwable t) {
             // yet unexcepted exception can still be logged
             error().when("saving user").occurred(t).log(log);

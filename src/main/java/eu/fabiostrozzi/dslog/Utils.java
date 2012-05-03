@@ -102,7 +102,8 @@ public class Utils {
     public static Object joinLines(String content, String separator) {
         if (content == null)
             return null;
-        content = content.replaceAll("\n\r", separator);
+        content = content.replaceAll("\\r\\n|\\r|\\n", separator);
+//        content = content.replaceAll("\r\n", separator).replaceAll("\n", separator);
         return content;
     }
 }

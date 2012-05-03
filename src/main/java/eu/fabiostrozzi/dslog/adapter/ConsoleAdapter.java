@@ -3,6 +3,8 @@ package eu.fabiostrozzi.dslog.adapter;
 
 import static eu.fabiostrozzi.dslog.Utils.joinLines;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,7 +52,9 @@ public class ConsoleAdapter implements Adapter {
                     sb.append("context is: ");
                     for (int i = 0; i < c.getAttributes().length; i++) {
                         Object o = c.getAttributes()[i];
-                        sb.append(String.valueOf(o)).append(i % 2 == 0 ? "=" : ", ");
+                        String sep = i % 2 == 0 ? "=" : (i + 1 < c.getAttributes().length ? ", "
+                                : "");
+                        sb.append(String.valueOf(o)).append(sep);
                     }
                 }
             }
@@ -68,14 +72,44 @@ public class ConsoleAdapter implements Adapter {
             @Override
             public void format(Term t, StringBuilder sb) {
                 ExpectedAndFound e = (ExpectedAndFound) t;
-                // TODO Auto-generated method stub
+                if (e.getExpected() != null && e.getExpected().length > 0) {
+                    sb.append("expected: ");
+                    for (int i = 0; i < e.getExpected().length; i++) {
+                        Object o = e.getExpected()[i];
+                        String sep = i % 2 == 0 ? "="
+                                : (i + 1 < e.getExpected().length ? ", " : "");
+                        sb.append(String.valueOf(o)).append(sep);
+                    }
+                }
+                if (e.getFound() != null && e.getFound().length > 0) {
+                    sb.append("found: ");
+                    for (int i = 0; i < e.getFound().length; i++) {
+                        Object o = e.getFound()[i];
+                        String sep = i % 2 == 0 ? "=" : (i + 1 < e.getFound().length ? ", " : "");
+                        sb.append(String.valueOf(o)).append(sep);
+                    }
+                }
             }
         });
 
         formatters.put(Happening.class, new TermFormatter<Happening>() {
             @Override
             public void format(Term t, StringBuilder sb) {
-                // TODO Auto-generated method stub
+                Happening h = (Happening) t;
+                sb.append("happened: ");
+                if (h.getException() != null) {
+                    sb.append("exception=");
+                    sb.append(joinLines(h.getException().getMessage(), "§"));
+                    sb.append(", stacktrace=");
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    h.getException().printStackTrace(pw);
+                    sb.append(joinLines(sw.toString(), "§"));
+                } else {
+                    String s = h.getParams() != null && h.getParams().length > 0 ? String.format(
+                            h.getWhat(), h.getParams()) : h.getWhat();
+                    sb.append("what= ").append(s);
+                }
             }
         });
 
@@ -104,14 +138,18 @@ public class ConsoleAdapter implements Adapter {
 
         formatters.put(Teller.class, new TermFormatter<Teller>() {
             @Override
-            public void format(Term t, StringBuilder sb) {
-                // TODO Auto-generated method stub
+            public void format(Term term, StringBuilder sb) {
+                Teller t = (Teller) term;
+                String s = t.getWhenParams() != null && t.getWhenParams().length > 0 ? String
+                        .format(t.getWhen(), t.getWhenParams()) : t.getWhen();
+                sb.append("when: ").append(s);
             }
         });
 
         formatters.put(User.class, new TermFormatter<User>() {
             @Override
             public void format(Term t, StringBuilder sb) {
+                User u = (User)t;
                 // TODO Auto-generated method stub
             }
         });
@@ -166,6 +204,9 @@ public class ConsoleAdapter implements Adapter {
         }
         sb.append(SEPARATOR);
         sb.append(clazz.getName());
+
+        sb.append(SEPARATOR);
+        sb.append(Thread.currentThread().getName());
 
         if (terms != null && terms.length > 0) {
             for (Term term : terms) {
