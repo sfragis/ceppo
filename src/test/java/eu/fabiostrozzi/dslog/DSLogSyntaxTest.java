@@ -7,6 +7,7 @@ import static eu.fabiostrozzi.dslog.DSLog.info;
 import static eu.fabiostrozzi.dslog.DSLog.warn;
 
 import java.io.IOException;
+import java.util.Date;
 
 import org.junit.Test;
 
@@ -40,6 +41,10 @@ public class DSLogSyntaxTest {
         warn().constraint("minimum level").violated("input level is too low").log(log);
         debug().when("creating user").constraint("user does not exist")
                 .passed("no users found with the same login name").log(log);
+
+        // something about a user
+        info().user("jack").created()
+                .with("username", "jack", "password", "123***456", "expire_date", new Date()).log(log);
 
         String username = "pippo";
         int id = 101;

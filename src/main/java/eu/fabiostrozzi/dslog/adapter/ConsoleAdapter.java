@@ -149,8 +149,16 @@ public class ConsoleAdapter implements Adapter {
         formatters.put(User.class, new TermFormatter<User>() {
             @Override
             public void format(Term t, StringBuilder sb) {
-                User u = (User)t;
-                // TODO Auto-generated method stub
+                User u = (User) t;
+                sb.append("user '").append(u.getUsername()).append("'");
+                if (u.isCreated())
+                    sb.append(" created");
+                else if (u.isDeleted())
+                    sb.append(" deleted");
+                else if (u.isSignedIn())
+                    sb.append(" has signed in");
+                else if (u.isSignedOut())
+                    sb.append(" has signed out");
             }
         });
     }
