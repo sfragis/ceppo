@@ -1,0 +1,9 @@
+HBase adapter
+-------------
+* Setup commands:
+    hbase> create 'dslog', 'd', 'k'
+    hbase> put 'dslog', 1, 'k:id', 1
+
+* Clean commands:
+    hbase> disable 'dslog'
+    hbase> drop 'dslog'
