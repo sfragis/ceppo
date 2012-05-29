@@ -35,7 +35,7 @@ public abstract class BaseGrammar {
         Adapter[] adapters = log.getAdapters();
         Term[] array = null;
         for (Adapter a : adapters) {
-            if (a.isGreatEqual(level)) {
+            if (a.canLog(level)) {
                 if (array == null)
                     array = terms.toArray(new Term[0]);
                 a.log(level, timestamp, log.getContext(), array);

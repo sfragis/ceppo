@@ -2,9 +2,10 @@
 package eu.fabiostrozzi.dslog.adapter;
 
 import java.util.Date;
+import java.util.Properties;
 
-import eu.fabiostrozzi.dslog.ThreadContext;
 import eu.fabiostrozzi.dslog.DSLogLevel;
+import eu.fabiostrozzi.dslog.ThreadContext;
 import eu.fabiostrozzi.dslog.terms.Term;
 
 /**
@@ -33,19 +34,29 @@ public interface Adapter {
      * Tells the underlying log device to compose a message made of the given terms.
      * 
      * @param level
-     * @param timestamp 
+     * @param timestamp
      * @param context
      * @param terms
      */
     void log(DSLogLevel level, Date timestamp, ThreadContext context, Term... terms);
 
     /**
-     * Returns true if the log level of the underlying log device is at least higher as input value.
+     * Returns true if the log level of the underlying log device is smaller than the specified
+     * input log level.
+     * <p>
+     * For instance, the following scenarios may happen:
+     * <li>the adapter level is debug and the passed level is info, then the log is passed to the
+     * adapter</li>
+     * <li>the adapter level is warning and the passed level is debug, then the log is NOT passed to
+     * the adapter</li>
+     * <li>the adapter level is info and the passed level is info, then the log IS passed to the
+     * adapter</li>
+     * 
      * 
      * @param level
      * @return
      */
-    boolean isGreatEqual(DSLogLevel level);
+    boolean canLog(DSLogLevel level);
 
     /**
      * Instances this adapter anew for the specified class if this adapter is class-binded.
@@ -54,5 +65,10 @@ public interface Adapter {
      * 
      * @param clazz
      */
-    Adapter instanceFor(Class<?> clazz);
+    Adapter of(Class<?> clazz);
+
+    /**
+     * @param props
+     */
+    public void init(Properties props);
 }

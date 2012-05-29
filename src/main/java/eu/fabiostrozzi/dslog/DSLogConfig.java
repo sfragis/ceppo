@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import eu.fabiostrozzi.dslog.adapter.Adapter;
@@ -69,14 +70,14 @@ public class DSLogConfig {
     private static Configuration configure(Properties props) {
         ConfigurationImpl conf = new ConfigurationImpl();
 
-        // get the the node property
+        // gets the node property
         String node = props.getProperty(NODE_PROP);
         if (node == null || node.trim().equals(""))
             throw new ConfigurationException(format("Invalid '%s' property, either null or empty",
                     NODE_PROP));
         conf.setNode(node.trim());
 
-        // get the list of adapters
+        // gets the list of adapters
         String[] adapterNames = getStrings(props, ADAPTERS_PROP, ",");
         if (adapterNames.length == 0)
             throw new ConfigurationException("No adapters configured");
@@ -86,18 +87,40 @@ public class DSLogConfig {
         int i = 0;
         for (String name : adapterNames) {
             // full qualified class name
-            String fqcn = props.getProperty(ADAPTER_PREF_PROP + "." + name);
+            String adapterName = ADAPTER_PREF_PROP + "." + name;
+            String adapterPropPrefix = ADAPTER_PREF_PROP + "." + name + ".";
+            String fqcn = props.getProperty(adapterName);
             try {
                 classes[i++] = (Class<Adapter>) Class.forName(fqcn);
             } catch (ClassNotFoundException e) {
-                throw new ConfigurationException(format("No class found qualified as '%s'", fqcn),
-                        e);
+                throw new ConfigurationException(format("No class qualified as '%s' was found",
+                        fqcn), e);
             }
+
+            // sets the adapter specific properties
+            Properties adapterProps = new Properties();
+            Enumeration<Object> keys = props.keys();
+            while (keys.hasMoreElements()) {
+                String k = (String) keys.nextElement();
+                if (k.startsWith(adapterPropPrefix)) {
+                    // if key is: adapter.hbase.pool.size
+                    // then subKey will be : pool.size
+                    String subKey = k.substring(adapterPropPrefix.length());
+                    String value = props.getProperty(k);
+                    adapterProps.setProperty(subKey, value);
+                }
+            }
+            conf.setAdapterProperties(name, adapterProps);
         }
 
         // instances the adapters
         Adapter[] adapters = instancesOf(classes, Adapter.class);
         conf.setAdapters(adapters);
+
+        // initialize adapters
+        i = 0;
+        for (String name : adapterNames)
+            adapters[i++].init(conf.getAdapterProperties(name));
 
         return conf;
     }

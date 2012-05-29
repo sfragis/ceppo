@@ -27,21 +27,29 @@ public class Utils {
         T[] array = (T[]) Array.newInstance(clazz, classes.length);
 
         int i = 0;
-        for (Class<T> c : classes) {
-            try {
-                Constructor<T> con = c.getConstructor();
-                T t = con.newInstance();
-                array[i++] = t;
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(format(
-                        "Class '%s' does not have a zero-arity constructor", c.getCanonicalName()),
-                        e);
-            } catch (Exception e) {
-                throw new RuntimeException(format("Cannot instance object of type '%s'",
-                        c.getCanonicalName()), e);
-            }
-        }
+        for (Class<T> c : classes)
+            array[i++] = instanceOf(c);
         return array;
+    }
+
+    /**
+     * Instances a new class.
+     * 
+     * @param clazz
+     * @return
+     */
+    public static <T> T instanceOf(Class<T> clazz) {
+        try {
+            Constructor<T> con = clazz.getConstructor();
+            T t = con.newInstance();
+            return t;
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(format("Class '%s' does not have a zero-arity constructor",
+                    clazz.getCanonicalName()), e);
+        } catch (Exception e) {
+            throw new RuntimeException(format("Cannot instance object of type '%s'",
+                    clazz.getCanonicalName()), e);
+        }
     }
 
     /**
@@ -65,6 +73,19 @@ public class Utils {
             list.add(t);
         }
         return t;
+    }
+
+    /**
+     * @param content
+     * @param separator
+     * @return
+     */
+    public static String joinLines(String content, String separator) {
+        if (content == null)
+            return null;
+        content = content.replaceAll("\\r\\n|\\r|\\n", separator);
+        // content = content.replaceAll("\r\n", separator).replaceAll("\n", separator);
+        return content;
     }
 
     /**
@@ -95,15 +116,43 @@ public class Utils {
     }
 
     /**
-     * @param content
-     * @param separator
-     * @return
+     * Gets a string property value given a property key and a default, fallback value.
+     * 
+     * @param props
+     *            The set of properties
+     * @param key
+     *            The property key
+     * @param dflt
+     *            The default value, used as a fallback value in case of exceptions.
+     * @return The string value associated to the specified property.
      */
-    public static Object joinLines(String content, String separator) {
-        if (content == null)
-            return null;
-        content = content.replaceAll("\\r\\n|\\r|\\n", separator);
-//        content = content.replaceAll("\r\n", separator).replaceAll("\n", separator);
-        return content;
+    public static String getString(Properties props, String key, String dflt) {
+        String val = props.getProperty(key);
+        return (val == null || val.trim().equals("")) ? dflt : val.trim();
+    }
+
+    /**
+     * Gets an integer property value given a property key and a default, fallback value.
+     * 
+     * @param props
+     *            The set of properties
+     * @param key
+     *            The property key
+     * @param dflt
+     *            The default value, used as a fallback value in case of exceptions.
+     * @return The integer value associated to the specified property.
+     */
+    public static int getInt(Properties props, String key, int dflt) {
+        String sv = props.getProperty(key);
+        if (sv == null || sv.trim().equals(""))
+            return dflt;
+
+        int iv = dflt;
+        try {
+            iv = Integer.parseInt(sv.trim());
+        } catch (NumberFormatException e) {
+            // TODO
+        }
+        return iv;
     }
 }

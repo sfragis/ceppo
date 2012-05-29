@@ -17,18 +17,20 @@ public class DSLog {
 
     /**
      * @param clazz
-     * @param adapters
      */
-    private DSLog(Class<?> clazz, Adapter[] adapters) {
+    private DSLog(Class<?> clazz) {
         this.clazz = clazz;
-        this.adapters = adapters;
     }
 
     /**
      * @return
      */
     public Adapter[] getAdapters() {
-        return adapters;
+        return instanceAdapters();
+    }
+    
+    private Adapter[] instanceAdapters() {
+        return adapters != null ? adapters : (adapters = DSLogConfig.getConfiguration().getAdaptersFor(clazz));
     }
 
     /**
@@ -49,12 +51,7 @@ public class DSLog {
      * @return
      */
     public static <S> DSLog get(Class<S> clazz) {
-        Adapter[] adapters = DSLogConfig.getConfiguration().getAdapters();
-        Adapter[] instances = new Adapter[adapters.length];
-        int i = 0;
-        for (Adapter a : adapters)
-            instances[i++] = a.instanceFor(clazz);
-        return new DSLog(clazz, instances);
+        return new DSLog(clazz);
     }
 
     /**
@@ -121,7 +118,7 @@ public class DSLog {
      */
     public void setUp() {
         ThreadContext ctx = new ThreadContext();
-        for (Adapter a : adapters)
+        for (Adapter a : instanceAdapters())
             a.setUp(ctx);
         localContext.set(ctx);
     }
@@ -130,7 +127,7 @@ public class DSLog {
      * Tears down the per-thread context.
      */
     public void tearDown() {
-        for (Adapter a : adapters)
+        for (Adapter a : instanceAdapters())
             a.tearDown();
         localContext.remove();
     }

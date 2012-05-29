@@ -1,6 +1,8 @@
 // Configuration.java, created on Apr 22, 2012
 package eu.fabiostrozzi.dslog;
 
+import java.util.Properties;
+
 import eu.fabiostrozzi.dslog.adapter.Adapter;
 
 /**
@@ -17,8 +19,18 @@ public interface Configuration {
     public String getNode();
 
     /**
+     * @param clazz
      * @return
      */
-    public Adapter[] getAdapters();
+    public Adapter[] getAdaptersFor(Class<?> clazz);
+
+    /**
+     * Retrieves adapter-specific properties.
+     * 
+     * @param adapter
+     *            The name of an adapter as declared in the adapter list.
+     * @return
+     */
+    public Properties getAdapterProperties(String adapter);
 
 }

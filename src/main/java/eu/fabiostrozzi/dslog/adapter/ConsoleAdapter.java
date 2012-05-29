@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Properties;
 
 import eu.fabiostrozzi.dslog.DSLogLevel;
 import eu.fabiostrozzi.dslog.ThreadContext;
@@ -31,6 +32,20 @@ public class ConsoleAdapter implements Adapter {
     private static final HashMap<Class<? extends Term>, TermFormatter<? extends Term>> formatters = new HashMap<Class<? extends Term>, TermFormatter<? extends Term>>();
     private Class<?> clazz;
     private DateFormat dateFormat;
+
+    /**
+     * Formats a term according to the current adapter.
+     * 
+     * @author fabio
+     */
+    private interface TermFormatter<T extends Term> {
+        /**
+         * @param sb
+         * @param t
+         * @return
+         */
+        public void format(Term term, StringBuilder sb);
+    }
 
     static {
         formatters.put(Constraint.class, new TermFormatter<Constraint>() {
@@ -168,14 +183,6 @@ public class ConsoleAdapter implements Adapter {
      */
     public ConsoleAdapter() {}
 
-    /**
-     * @param clazz
-     */
-    public ConsoleAdapter(Class<?> clazz) {
-        this.clazz = clazz;
-        this.dateFormat = DateFormat.getDateTimeInstance();
-    }
-
     /*
      * (non-Javadoc)
      * @see eu.fabiostrozzi.dslog.adapter.Adapter#setUp(eu.fabiostrozzi.dslog.ThreadContext)
@@ -234,7 +241,7 @@ public class ConsoleAdapter implements Adapter {
      * @see eu.fabiostrozzi.dslog.adapter.Adapter#isGreatEqual(eu.fabiostrozzi.dslog.DSLogLevel)
      */
     @Override
-    public boolean isGreatEqual(DSLogLevel level) {
+    public boolean canLog(DSLogLevel level) {
         return true;
     }
 
@@ -243,8 +250,19 @@ public class ConsoleAdapter implements Adapter {
      * @see eu.fabiostrozzi.dslog.adapter.Adapter#instanceFor(java.lang.Class)
      */
     @Override
-    public Adapter instanceFor(Class<?> clazz) {
-        return new ConsoleAdapter(clazz);
+    public Adapter of(Class<?> clazz) {
+        ConsoleAdapter ca = new ConsoleAdapter();
+        ca.clazz = clazz;
+        ca.dateFormat = dateFormat;
+        return ca;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see eu.fabiostrozzi.dslog.adapter.Adapter#setProperties(java.util.Properties)
+     */
+    @Override
+    public void init(Properties props) {
+        dateFormat = DateFormat.getDateTimeInstance();
+    }
 }

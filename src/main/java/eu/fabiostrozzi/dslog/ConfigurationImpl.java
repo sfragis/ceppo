@@ -1,21 +1,36 @@
 // ConfigurationImpl.java, created on Apr 29, 2012
 package eu.fabiostrozzi.dslog;
 
+import java.util.Hashtable;
+import java.util.Properties;
+
 import eu.fabiostrozzi.dslog.adapter.Adapter;
 
 /**
- * @author fabio
+ * Configuration implementation.
  * 
+ * @author fabio
  */
 public class ConfigurationImpl implements Configuration {
     private Adapter[] adapters;
     private String node;
+    private Hashtable<String, Properties> adapterProperties;
+
+    public ConfigurationImpl() {
+        this.adapterProperties = new Hashtable<String, Properties>(2);
+    }
 
     /**
+     * @param clazz
      * @return the adapters
      */
-    public Adapter[] getAdapters() {
-        return adapters;
+    @Override
+    public Adapter[] getAdaptersFor(Class<?> clazz) {
+        Adapter[] instances = new Adapter[adapters.length];
+        int i = 0;
+        for (Adapter a : adapters)
+            instances[i++] = a.of(clazz);
+        return instances;
     }
 
     /**
@@ -29,6 +44,7 @@ public class ConfigurationImpl implements Configuration {
     /**
      * @return the node
      */
+    @Override
     public String getNode() {
         return node;
     }
@@ -39,6 +55,23 @@ public class ConfigurationImpl implements Configuration {
      */
     public void setNode(String node) {
         this.node = node;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see eu.fabiostrozzi.dslog.Configuration#getAdapterProperties(java.lang.String)
+     */
+    @Override
+    public Properties getAdapterProperties(String adapter) {
+        return adapterProperties.get(adapter);
+    }
+
+    /**
+     * @param adapter
+     * @param adapterProp
+     */
+    public void setAdapterProperties(String adapter, Properties adapterProp) {
+        this.adapterProperties.put(adapter, adapterProp);
     }
 
 }
