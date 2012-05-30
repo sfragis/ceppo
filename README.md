@@ -1,4 +1,4 @@
-ceppo
+Ceppo
 =====
 
 Ceppo is a Java library that helps you write clean logs.
