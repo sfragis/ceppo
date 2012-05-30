@@ -31,8 +31,8 @@ branch=$(git branch --no-color | grep '\*' | cut -d' ' -f2)
 if [ $branch = 'master' ]; then
     branch=
 fi
-prefix=dslog-"$vers"
-path="$HOME/Labs/backups/dslog/$branch/$prefix"
+prefix=ceppo-"$vers"
+path="$HOME/Labs/backups/ceppo/$branch/$prefix"
 tar="$prefix".tar
 
 mkdir -p "$path"
